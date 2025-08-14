@@ -76,13 +76,6 @@ tiempoLibreria libro tiempoActual =
         Just tiempoSalida -> diffUTCTime tiempoSalida (entrada libro)
         Nothing -> diffUTCTime tiempoActual (entrada libro)
 
---Funcion para guardar la informacion en un txt--
-guardarLibro :: [Libro] -> IO ()
-guardarLibro libreria = do
-    resultado <- reintentar 5 (writeFile "libreria.txt" (unlines (map mostrarLibro libreria)))
-    case resultado of
-        Left ex -> putStrLn $ "Error guardando el libro: " ++ show ex
-        Right _ ->  putStrLn "Libro guardado en el archivo libreria.txt"
 
 
 --Funcion para reintentar en caso de errores--
@@ -95,6 +88,30 @@ reintentar n accion = do
             threadDelay 1000000  -- Esperar 1 segundo antes de reintentar
             reintentar (n - 1) accion
         Right val -> return (Right val)
+
+
+--Funcion para cargar archivos desde un txt--
+cargarLibro :: IO [Libro]
+cargarLibro = do
+    resultado <- try (readFile "libreria.txt") :: IO (Either IOException String)
+    case resultado of
+        Left ex -> do
+            putStrLn $ "Error cargando el archivo" ++ show ex
+            return []
+        Right contenido -> do
+            let lineas = lines contenido
+            return (map leerLibro lineas)
+    where
+        leerLibro linea = read linea :: Libro
+
+
+--Funcion para mostrar la informacion del Libro como texto--
+mostrarLibro :: Libro -> String
+mostrarLibro libro =
+    show (codigo libro) ++ " - " ++ titulo libro ++ " - " ++ autor libro ++ " - " ++ categoria libro ++ " - " ++ estado libro ++ " - " ++ show (entrada libro) ++ " - " ++ show (salida libro)
+
+
+
 
 cicloPrincipal :: [Libro] -> IO ()
 cicloPrincipal libreria = do
