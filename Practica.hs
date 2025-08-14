@@ -69,15 +69,32 @@ buscarLibroEstado estadoLibro libreria =
        else unlines (map mostrarLibro resultado)
 
 
+--Funcion para calcular el tiempo que estuvo el libro en la Libreria--
+tiempoLibreria:: Libro -> UTCTime -> NominalDiffTime
+tiempoLibreria libro tiempoActual =
+    case salida libro of
+        Just tiempoSalida -> diffUTCTime tiempoSalida (entrada libro)
+        Nothing -> diffUTCTime tiempoActual (entrada libro)
 
-
-guardarArchivo :: [Libro] -> IO ()
-guardarArchivo libreria = do
+--Funcion para guardar la informacion en un txt--
+guardarLibro :: [Libro] -> IO ()
+guardarLibro libreria = do
     resultado <- reintentar 5 (writeFile "libreria.txt" (unlines (map mostrarLibro libreria)))
     case resultado of
-        Left ex -> putStrLn ("Error guardando el archivo " ++ show  ex)
-        Right _ -> putStrLn ("Registro del libro guardado en el archivo libreria.txt")
+        Left ex -> putStrLn $ "Error guardando el libro: " ++ show ex
+        Right _ ->  putStrLn "Libro guardado en el archivo libreria.txt"
 
+
+--Funcion para reintentar en caso de errores--
+reintentar :: Int -> IO a -> IO (Either IOException a)
+reintentar 0 accion = catch (accion >>= return . Right) (\(ex :: IOException) -> return (Left ex))
+reintentar n accion = do
+    resultado <- catch (accion >>= return . Right) (\(ex :: IOException) -> return (Left ex))
+    case resultado of
+        Left ex -> do
+            threadDelay 1000000  -- Esperar 1 segundo antes de reintentar
+            reintentar (n - 1) accion
+        Right val -> return (Right val)
 
 cicloPrincipal :: [Libro] -> IO ()
 cicloPrincipal libreria = do
