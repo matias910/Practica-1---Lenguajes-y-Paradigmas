@@ -161,6 +161,79 @@ cicloPrincipal libreria = do
             guardarLibreria libreriaActualizada
             cicloPrincipal libreriaActualizada
 
+        "3" -> do
+            putStrLn "\nSeleccione una opción:"
+            putStrLn "1. Buscar libro por codigo"
+            putStrLn "2. Buscar libro por titulo"
+            putStrLn "3. Buscar libro por autor"
+            putStrLn "4. Buscar libro por categoria"
+            putStrLn "5. Buscar libro por estado"
+
+            opcionBusqueda <- getLine
+            case opcionBusqueda of
+                "1" -> do
+                    putStrLn "Ingrese el codigo del libro"
+                    codigoStr <- getLine
+                    let codigoLibro = read codigoStr :: Int
+                    putStrLn (buscarLibroCodigo codigoLibro libreria)
+                    cicloPrincipal libreria
+
+
+                "2" -> do
+                    putStrLn "Ingrese el titulo del libro"
+                    tituloLibro <- getLine
+                    putStrLn (buscarLibroTitulo tituloLibro libreria)
+                    cicloPrincipal libreria
+
+                "3" -> do
+                    putStrLn "Ingrese el autor del libro"
+                    autorLibro <- getLine
+                    putStrLn (buscarLibroAutor autorLibro libreria)
+                    cicloPrincipal libreria
+
+                "4" -> do
+                    putStrLn "Ingrese la categoria"
+                    categoriaLibro <- getLine
+                    putStrLn (buscarLibroCategoria categoriaLibro libreria)
+                    cicloPrincipal libreria
+
+
+                "5" -> do
+                    putStrLn "\nSeleccione una opción:"
+                    putStrLn "1. Disponible"
+                    putStrLn "2. Prestado"
+
+                    opcionEstado <- getLine
+                    case opcionEstado of
+                        "1" -> do
+                            let estadoLibro = "Disponible"
+                            putStrLn (buscarLibroEstado estadoLibro libreria)
+                            cicloPrincipal libreria
+                        "2" -> do
+                            let estadoLibro = "Prestado"
+                            putStrLn (buscarLibroEstado estadoLibro libreria)
+                            cicloPrincipal libreria
+                        _ -> do
+                            putStrLn "Opcion no valida, intente de nuevo"
+                            cicloPrincipal libreria
+                _ -> do
+                    putStrLn "Opcion no valida, intente de nuevo"
+                    cicloPrincipal libreria
+
+
+        "4" -> do
+            putStrLn "Mostrando libros en la biblioteca: "
+            --Libreria Actualizada--
+            libreriaActualizada <- cargarLibreria
+            mapM_ (\v -> putStrLn $ mostrarLibro v) libreriaActualizada
+            cicloPrincipal libreriaActualizada
+
+
+        "5" -> putStrLn "¡Hasta luego, Gracias por usar nuestra aplicacion!"
+
+        _ -> do
+            putStrLn "Opcion no valida, intente de nuevo"
+            cicloPrincipal libreria
 
 
 
