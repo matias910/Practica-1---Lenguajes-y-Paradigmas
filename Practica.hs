@@ -28,6 +28,12 @@ registrarSalidaLibro codigoLibro tiempo libreria =
                else v) libreria
 
 
+--Funcion para mostrar la informacion del Libro como texto--
+mostrarLibro :: Libro -> String
+mostrarLibro libro =
+    show (codigo libro) ++ " - " ++ titulo libro ++ " - " ++ autor libro ++ " - " ++ categoria libro ++ " - " ++ estado libro ++ " - " ++ show (entrada libro) ++ " - " ++ show (salida libro)
+
+
 --Funcion Buscar Libro por Codigo--
 buscarLibroCodigo :: Int -> [Libro] -> String
 buscarLibroCodigo codigoLibro libreria =
@@ -90,9 +96,18 @@ reintentar n accion = do
         Right val -> return (Right val)
 
 
+--Funcion para guardar la informacion en archivo txt --
+guardarLibreria :: [Libro] -> IO ()
+guardarLibreria libreria = do
+    resultado <- try (writeFile "libreria.txt" (unlines (map show libreria))) :: IO (Either IOException ())
+    case resultado of
+        Left ex -> putStrLn $ "Error guardando la libreria " ++ show ex
+        Right _ -> putStrLn "Libro guardado en el archivo libreria.txt."
+
+
 --Funcion para cargar archivos desde un txt--
-cargarLibro :: IO [Libro]
-cargarLibro = do
+cargarLibreria :: IO [Libro]
+cargarLibreria = do
     resultado <- try (readFile "libreria.txt") :: IO (Either IOException String)
     case resultado of
         Left ex -> do
@@ -105,23 +120,53 @@ cargarLibro = do
         leerLibro linea = read linea :: Libro
 
 
---Funcion para mostrar la informacion del Libro como texto--
-mostrarLibro :: Libro -> String
-mostrarLibro libro =
-    show (codigo libro) ++ " - " ++ titulo libro ++ " - " ++ autor libro ++ " - " ++ categoria libro ++ " - " ++ estado libro ++ " - " ++ show (entrada libro) ++ " - " ++ show (salida libro)
 
-
-
-
+--Funcion Ciclo del Programa (Menu) --
 cicloPrincipal :: [Libro] -> IO ()
 cicloPrincipal libreria = do
-    putStrLn "Seleccione una opción:"
+    putStrLn "\nSeleccione una opción:"
     putStrLn "1. Registrar entrada de libro"
-    putStrLn "2. Registrar salida de libro"
-    putStrLn "3. Buscar libro por codigo"
+    putStrLn "2. Registrar prestamo de libro"
+    putStrLn "3. Buscar libro por filtros"
     putStrLn "4. Listar los libros de la biblioteca"
     putStrLn "5. Salir"
 
+    opcion <- getLine
+    case opcion of
+        "1"  -> do
+            putStrLn "Ingresa el codigo del libro"
+            codigoStr <- getLine
+            let codigoLibro = read codigoStr :: Int
+            putStrLn "Ingresa el titulo"
+            tituloLibro <- getLine
+            putStrLn "Ingresa el autor"
+            autorLibro <- getLine
+            putStrLn "Ingresa la categoria"
+            categoriaLibro <- getLine
+            let estadoLibro = "Disponible"
+            tiempo <- getCurrentTime
+
+            let libreriaActualizada = registrarEntradaLibro codigoLibro tituloLibro autorLibro categoriaLibro estadoLibro tiempo libreria
+            putStrLn $ "El libro: " ++ tituloLibro ++ " con codigo: " ++ show codigoLibro ++ " ha ingresado a la biblioteca"
+            guardarLibreria libreriaActualizada
+            cicloPrincipal libreriaActualizada
+
+        "2" -> do
+            putStrLn "Ingresar el codigo del libro que vas a llevar: "
+            codigoStr <- getLine
+            let codigoLibro = read codigoStr :: Int
+            tiempoActual <- getCurrentTime
+            let libreriaActualizada = registrarSalidaLibro codigoLibro tiempoActual libreria
+            putStrLn $ "El libro con codigo: " ++ show codigoLibro ++ " ha sido retirado para prestamo exitosamente"
+            guardarLibreria libreriaActualizada
+            cicloPrincipal libreriaActualizada
+
+
+
+
 main :: IO ()
 main = do
+    libreria <- cargarLibreria
     putStrLn "¡Bienvenido al Sistema de Prestamos de libros de nuestra biblioteca!!"
+
+    cicloPrincipal libreria
