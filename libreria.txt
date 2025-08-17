@@ -1,4 +1,15 @@
-Libro {codigo = 1133, titulo = "El senor de los Anillos", autor = "John Ronald", categoria = "Aventura", estado = "Disponible", entrada = 2025-08-17 15:40:26.605005611 UTC, salida = Nothing}
+Libro {codigo = 1666, titulo = "La divina comedia", autor = "Dante Alighieri", categoria = "poesia epica", estado = "Disponible", entrada = 2025-08-17 16:07:44.7476644 UTC, salida = Nothing}
+Libro {codigo = 1555, titulo = "El resplandor ", autor = "Stephen king", categoria = "terror y suspenso", estado = "Disponible", entrada = 2025-08-17 16:06:26.7006589 UTC, salida = Nothing}
+Libro {codigo = 1444, titulo = "El alquimista", autor = "Paulo Coelho", categoria = "ficcion filosofica", estado = "Disponible", entrada = 2025-08-17 16:05:08.3127967 UTC, salida = Nothing}
+Libro {codigo = 1333, titulo = "El hobbit", autor = "Jhon ronald", categoria = "aventura", estado = "Disponible", entrada = 2025-08-17 16:03:16.5395354 UTC, salida = Nothing}
+Libro {codigo = 1222, titulo = "Los juegos del hambre", autor = "Suzanne Collins", categoria = "distopia", estado = "Disponible", entrada = 2025-08-17 16:02:01.4806357 UTC, salida = Nothing}
+Libro {codigo = 1199, titulo = "Narnia", autor = "C.S.Lewis", categoria = "fantasia", estado = "Disponible", entrada = 2025-08-17 16:00:12.3914312 UTC, salida = Nothing}
+Libro {codigo = 1188, titulo = "It", autor = "Stephen King", categoria = "terror y suspenso", estado = "Disponible", entrada = 2025-08-17 15:59:19.6653787 UTC, salida = Nothing}
+Libro {codigo = 1177, titulo = "La Odisea", autor = "Homero", categoria = "Epica clasica", estado = "Disponible", entrada = 2025-08-17 15:58:26.6537596 UTC, salida = Nothing}
+Libro {codigo = 1166, titulo = "Dracula", autor = "Bram Stoker", categoria = "terror", estado = "Disponible", entrada = 2025-08-17 15:57:37.6547504 UTC, salida = Nothing}
+Libro {codigo = 1155, titulo = "Harry potter y la piedra filosofal", autor = "J.K.Rowling", categoria = "fantasia magica", estado = "Disponible", entrada = 2025-08-17 15:56:28.2174755 UTC, salida = Nothing}
+Libro {codigo = 1144, titulo = "Cien anos de soledad", autor = "Gabriel Garcia Marquez", categoria = "realismo magico", estado = "Disponible", entrada = 2025-08-17 15:55:22.2092386 UTC, salida = Nothing}
+Libro {codigo = 1133, titulo = "El senor de los anillos", autor = "Jhon ronald", categoria = "aventura", estado = "Disponible", entrada = 2025-08-17 15:52:13.9633168 UTC, salida = Nothing}
 Libro {codigo = 1122, titulo = "Cinderella", autor = "Charles Perrault", categoria = "Cuento de Hadas", estado = "Disponible", entrada = 2025-08-17 15:01:02.05231283 UTC, salida = Nothing}
 Libro {codigo = 9999, titulo = "La Bella y la Bestia", autor = "Jeanne Marie", categoria = "Cuento de Hadas", estado = "Prestado", entrada = 2025-08-17 14:59:54.934057271 UTC, salida = Just 2025-08-17 15:28:56.186310232 UTC}
 Libro {codigo = 8888, titulo = "Malefica", autor = "Disney", categoria = "Romance", estado = "Disponible", entrada = 2025-08-17 14:57:56.377735179 UTC, salida = Nothing}
