@@ -26,14 +26,32 @@ registrarEntradaLibro codigoLibro tituloLibro autorLibro categoriaLibro tiempo l
 registrarSalidaLibro :: Int -> UTCTime -> [Libro] -> [Libro]
 registrarSalidaLibro codigoLibro tiempo libreria =
     map (\v -> if codigoLibro == codigo v
-               then v {salida = Just tiempo, estado = "Prestado"}
+               then v { salida = Just tiempo, estado = "Prestado"}
                else v) libreria
+
+
+--Funcion devolver Libro--
+devolverLibro :: Int -> [Libro] -> IO [Libro]
+devolverLibro codigoBuscado libreria = do
+    tiempoActual <- getCurrentTime
+    let libreriaActualizada = map (\v ->
+            if codigo v == codigoBuscado
+            then v { salida = Just tiempoActual, estado = "Disponible" }
+            else v)
+            libreria
+    writeFile "libreria.txt" (unlines (map show libreriaActualizada))
+    return libreriaActualizada
+
+--Formatear informacion de la salida del libro--
+formatearSalidaLibro :: Maybe UTCTime -> String
+formatearSalidaLibro Nothing = "El libro sigue en la biblioteca"
+formatearSalidaLibro (Just tiempo) = "El libro fue retirado el: " ++ show tiempo
 
 
 --Funcion para mostrar la informacion del Libro como texto--
 mostrarLibro :: Libro -> String
 mostrarLibro libro =
-    show (codigo libro) ++ " - " ++ titulo libro ++ " - " ++ autor libro ++ " - " ++ categoria libro ++ " - " ++ estado libro ++ " - " ++ show (entrada libro) ++ " - " ++ show (salida libro)
+    show (codigo libro) ++ " - " ++ titulo libro ++ " - " ++ autor libro ++ " - " ++ categoria libro ++ " - " ++ estado libro ++ " - " ++ show (entrada libro) ++ " - " ++ formatearSalidaLibro (salida libro)
 
 
 --Funcion Buscar Libro por Codigo--
@@ -43,13 +61,13 @@ buscarLibroCodigo codigoLibro libreria tiempoActual =
     in if null resultado
        then "No hay ningun libro con este codigo"
        else unlines (map (\libro ->
-                        "El libro con codigo: " ++ show (codigo libro) ++ " se encuentra en la libreria: " ++
+                        "El libro con codigo: " ++ show (codigo libro) ++ " se encuentra en la biblioteca: " ++
                         "\n Titulo: " ++ titulo libro ++
                         "\n Autor: " ++ autor libro ++
                         "\n Categoria: " ++ categoria libro ++
                         "\n Estado: " ++ estado libro ++
                         "\n Fecha de entrada: " ++ show (entrada libro) ++
-                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual) ++ " segundos") resultado)
 
 
 
@@ -60,13 +78,13 @@ buscarLibroTitulo tituloLibro libreria tiempoActual =
     in if null resultado
        then "No hay ningun libro con este titulo"
        else unlines (map (\libro ->
-                        "El libro con titulo: " ++ titulo libro ++ " se encuentra en la libreria: " ++
+                        "El libro con titulo: " ++ titulo libro ++ " se encuentra en la biblioteca: " ++
                         "\n Codigo: " ++ show (codigo libro) ++
                         "\n Autor: " ++ autor libro ++
                         "\n Categoria: " ++ categoria libro ++
                         "\n Estado: " ++ estado libro ++
                         "\n Fecha de entrada: " ++ show (entrada libro) ++
-                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual) ++ " segundos") resultado)
 
 --Funcion Buscar Libro por Autor--
 buscarLibroAutor :: String -> [Libro] -> UTCTime -> String  --Filer devuelve una lista--
@@ -75,13 +93,13 @@ buscarLibroAutor autorLibro libreria tiempoActual =
     in if null resultado
        then "No hay libros de este autor en la biblioteca."
        else unlines (map (\libro ->
-                        "El libro del autor: " ++ autor libro ++ " se encuentra en la libreria: " ++
+                        "El libro del autor: " ++ autor libro ++ " se encuentra en la biblioteca: " ++
                         "\n Codigo: " ++ show (codigo libro) ++
                         "\n Titulo: " ++ titulo libro ++
                         "\n Categoria: " ++ categoria libro ++
                         "\n Estado: " ++ estado libro ++
                         "\n Fecha de entrada: " ++ show (entrada libro) ++
-                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual) ++ " segundos") resultado)
 
 --Funcion Buscar Libro por Categoria--
 buscarLibroCategoria :: String -> [Libro] -> UTCTime -> String
@@ -90,13 +108,13 @@ buscarLibroCategoria categoriaLibro libreria tiempoActual =
     in if null resultado
        then "No hay libros de esta categoria"
        else unlines (map (\libro ->
-                        "El libro de la categoria: " ++ categoria libro ++ " se encuentra en la libreria: " ++
+                        "El libro de la categoria: " ++ categoria libro ++ " se encuentra en la biblioteca: " ++
                         "\n Codigo: " ++ show (codigo libro) ++
                         "\n Titulo: " ++ titulo libro ++
                         "\n Autor: " ++ autor libro ++
                         "\n Estado: " ++ estado libro ++
                         "\n Fecha de entrada: " ++ show (entrada libro) ++
-                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual) ++ " segundos") resultado)
 
 
 --Funcion Buscar Libro por Estado--
@@ -106,13 +124,13 @@ buscarLibroEstado estadoLibro libreria tiempoActual =
     in if null resultado
        then "No hay libros con este estado"
        else unlines (map (\libro ->
-                        "El libro con estado: " ++ estado libro ++ " se encuentra en la libreria: " ++
+                        "El libro con estado: " ++ estado libro ++ " se encuentra en la biblioteca: " ++
                         "\n Codigo: " ++ show (codigo libro) ++
                         "\n Titulo: " ++ titulo libro ++
                         "\n Autor: " ++ autor libro ++
                         "\n Categoria: " ++ categoria libro ++
                         "\n Fecha de entrada: " ++ show (entrada libro) ++
-                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual) ++ " segundos") resultado)
 
 
 
@@ -162,11 +180,12 @@ cargarLibreria = do
 cicloPrincipal :: [Libro] -> IO ()
 cicloPrincipal libreria = do
     putStrLn "\nSeleccione una opción:"
-    putStrLn "1. Registrar entrada de libro"
+    putStrLn "1. Registrar entrada / devolucion de libro"
     putStrLn "2. Registrar prestamo de libro"
-    putStrLn "3. Buscar libro por filtros"
-    putStrLn "4. Listar los libros de la biblioteca"
-    putStrLn "5. Salir"
+    putStrLn "3. Devolver libro"
+    putStrLn "4. Buscar libro por filtros"
+    putStrLn "5. Listar los libros de la biblioteca"
+    putStrLn "6. Salir"
 
     opcion <- getLine
     case opcion of
@@ -199,6 +218,14 @@ cicloPrincipal libreria = do
             cicloPrincipal libreriaActualizada
 
         "3" -> do
+            putStrLn "Ingrese el codigo del libro que desea devolver: "
+            codigoStr <- getLine
+            let codigoLibro = read codigoStr :: Int
+            libreriaActualizada <- devolverLibro codigoLibro libreria
+            putStrLn $ "El libro con codigo: " ++ show codigoLibro ++ " ha sido devuelto exitosamente"
+            cicloPrincipal libreriaActualizada
+
+        "4" -> do
             putStrLn "\nSeleccione una opción:"
             putStrLn "1. Buscar libro por codigo"
             putStrLn "2. Buscar libro por titulo"
@@ -264,7 +291,7 @@ cicloPrincipal libreria = do
                     cicloPrincipal libreria
 
 
-        "4" -> do
+        "5" -> do
             putStrLn "Mostrando libros en la biblioteca: "
             --Libreria Actualizada--
             libreriaActualizada <- cargarLibreria
@@ -272,7 +299,7 @@ cicloPrincipal libreria = do
             cicloPrincipal libreriaActualizada
 
 
-        "5" -> putStrLn "¡Hasta luego, Gracias por usar nuestra aplicacion!"
+        "6" -> putStrLn "¡Hasta luego, Gracias por usar nuestra aplicacion!"
 
         _ -> do
             putStrLn "Opcion no valida, intente de nuevo"
