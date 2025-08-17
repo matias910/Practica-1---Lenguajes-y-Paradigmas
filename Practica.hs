@@ -16,8 +16,8 @@ data Libro = Libro {
 }deriving (Show, Read)
 
 --Funcion Registrar Libro--
-registrarEntradaLibro :: Int -> String -> String -> String -> String -> UTCTime -> [Libro] -> [Libro]
-registrarEntradaLibro codigoLibro tituloLibro autorLibro categoriaLibro estadoLibro tiempo libreria =
+registrarEntradaLibro :: Int -> String -> String -> String -> UTCTime -> [Libro] -> [Libro]
+registrarEntradaLibro codigoLibro tituloLibro autorLibro categoriaLibro tiempo libreria =
     Libro codigoLibro tituloLibro autorLibro categoriaLibro "Disponible" tiempo Nothing : libreria
 
 --Funcion Prestar Libro--
@@ -99,7 +99,7 @@ reintentar n accion = do
 --Funcion para guardar la informacion en archivo txt --
 guardarLibreria :: [Libro] -> IO ()
 guardarLibreria libreria = do
-    resultado <- try (writeFile "libreria.txt" (unlines (map show libreria))) :: IO (Either IOException ())
+    resultado <- reintentar 5 (writeFile "libreria.txt" (unlines (map show libreria))) :: IO (Either IOException ())
     case resultado of
         Left ex -> putStrLn $ "Error guardando la libreria " ++ show ex
         Right _ -> putStrLn "Libro guardado en el archivo libreria.txt."
@@ -113,11 +113,7 @@ cargarLibreria = do
         Left ex -> do
             putStrLn $ "Error cargando el archivo" ++ show ex
             return []
-        Right contenido -> do
-            let lineas = lines contenido
-            return (map leerLibro lineas)
-    where
-        leerLibro linea = read linea :: Libro
+        Right contenido -> return (map read (lines contenido))
 
 
 
@@ -146,7 +142,7 @@ cicloPrincipal libreria = do
             let estadoLibro = "Disponible"
             tiempo <- getCurrentTime
 
-            let libreriaActualizada = registrarEntradaLibro codigoLibro tituloLibro autorLibro categoriaLibro estadoLibro tiempo libreria
+            let libreriaActualizada = registrarEntradaLibro codigoLibro tituloLibro autorLibro categoriaLibro tiempo libreria
             putStrLn $ "El libro: " ++ tituloLibro ++ " con codigo: " ++ show codigoLibro ++ " ha ingresado a la biblioteca"
             guardarLibreria libreriaActualizada
             cicloPrincipal libreriaActualizada
