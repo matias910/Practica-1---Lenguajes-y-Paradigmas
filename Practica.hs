@@ -4,6 +4,8 @@ import System.IO
 import Control.Exception
 import Control.Concurrent (threadDelay)
 import Data.Maybe (mapMaybe)
+import Control.DeepSeq (deepseq) -- Para forzar la evaluación completa de los datos --
+
 
 data Libro = Libro {
     codigo :: Int,
@@ -35,44 +37,83 @@ mostrarLibro libro =
 
 
 --Funcion Buscar Libro por Codigo--
-buscarLibroCodigo :: Int -> [Libro] -> String
-buscarLibroCodigo codigoLibro libreria =
+buscarLibroCodigo :: Int -> [Libro] -> UTCTime -> String
+buscarLibroCodigo codigoLibro libreria tiempoActual =
     let resultado = filter (\v -> codigoLibro == codigo v) libreria
     in if null resultado
        then "No hay ningun libro con este codigo"
-       else unlines (map mostrarLibro resultado)
+       else unlines (map (\libro ->
+                        "El libro con codigo: " ++ show (codigo libro) ++ " se encuentra en la libreria: " ++
+                        "\n Titulo: " ++ titulo libro ++
+                        "\n Autor: " ++ autor libro ++
+                        "\n Categoria: " ++ categoria libro ++
+                        "\n Estado: " ++ estado libro ++
+                        "\n Fecha de entrada: " ++ show (entrada libro) ++
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+
+
 
 --Funcion Buscar Libro por Titulo--
-buscarLibroTitulo :: String -> [Libro] -> String
-buscarLibroTitulo tituloLibro libreria =
+buscarLibroTitulo :: String -> [Libro] -> UTCTime -> String
+buscarLibroTitulo tituloLibro libreria tiempoActual =
     let resultado = filter (\v -> tituloLibro == titulo v) libreria
     in if null resultado
        then "No hay ningun libro con este titulo"
-       else unlines (map mostrarLibro resultado)
+       else unlines (map (\libro ->
+                        "El libro con titulo: " ++ titulo libro ++ " se encuentra en la libreria: " ++
+                        "\n Codigo: " ++ show (codigo libro) ++
+                        "\n Autor: " ++ autor libro ++
+                        "\n Categoria: " ++ categoria libro ++
+                        "\n Estado: " ++ estado libro ++
+                        "\n Fecha de entrada: " ++ show (entrada libro) ++
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
 
 --Funcion Buscar Libro por Autor--
-buscarLibroAutor :: String -> [Libro] -> String--Filer devuelve una lista--
-buscarLibroAutor autorLibro libreria =
+buscarLibroAutor :: String -> [Libro] -> UTCTime -> String  --Filer devuelve una lista--
+buscarLibroAutor autorLibro libreria tiempoActual =
     let resultado = filter (\v -> autorLibro == autor v) libreria
     in if null resultado
        then "No hay libros de este autor en la biblioteca."
-       else unlines (map mostrarLibro resultado)
+       else unlines (map (\libro ->
+                        "El libro del autor: " ++ autor libro ++ " se encuentra en la libreria: " ++
+                        "\n Codigo: " ++ show (codigo libro) ++
+                        "\n Titulo: " ++ titulo libro ++
+                        "\n Categoria: " ++ categoria libro ++
+                        "\n Estado: " ++ estado libro ++
+                        "\n Fecha de entrada: " ++ show (entrada libro) ++
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
 
 --Funcion Buscar Libro por Categoria--
-buscarLibroCategoria :: String -> [Libro] -> String
-buscarLibroCategoria categoriaLibro libreria =
+buscarLibroCategoria :: String -> [Libro] -> UTCTime -> String
+buscarLibroCategoria categoriaLibro libreria tiempoActual =
     let resultado = filter (\v -> categoriaLibro == categoria v) libreria
     in if null resultado
        then "No hay libros de esta categoria"
-       else unlines (map mostrarLibro resultado)
+       else unlines (map (\libro ->
+                        "El libro de la categoria: " ++ categoria libro ++ " se encuentra en la libreria: " ++
+                        "\n Codigo: " ++ show (codigo libro) ++
+                        "\n Titulo: " ++ titulo libro ++
+                        "\n Autor: " ++ autor libro ++
+                        "\n Estado: " ++ estado libro ++
+                        "\n Fecha de entrada: " ++ show (entrada libro) ++
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+
 
 --Funcion Buscar Libro por Estado--
-buscarLibroEstado :: String -> [Libro] -> String
-buscarLibroEstado estadoLibro libreria =
+buscarLibroEstado :: String -> [Libro] -> UTCTime -> String
+buscarLibroEstado estadoLibro libreria tiempoActual =
     let resultado = filter (\v -> estadoLibro == estado v) libreria
     in if null resultado
        then "No hay libros con este estado"
-       else unlines (map mostrarLibro resultado)
+       else unlines (map (\libro ->
+                        "El libro con estado: " ++ estado libro ++ " se encuentra en la libreria: " ++
+                        "\n Codigo: " ++ show (codigo libro) ++
+                        "\n Titulo: " ++ titulo libro ++
+                        "\n Autor: " ++ autor libro ++
+                        "\n Categoria: " ++ categoria libro ++
+                        "\n Fecha de entrada: " ++ show (entrada libro) ++
+                        "\n Tiempo en la libreria: " ++ show (tiempoLibreria libro tiempoActual)) resultado)
+
 
 
 --Funcion para calcular el tiempo que estuvo el libro en la Libreria--
@@ -113,8 +154,8 @@ cargarLibreria = do
         Left ex -> do
             putStrLn $ "Error cargando el archivo" ++ show ex
             return []
-        Right contenido -> return (map read (lines contenido))
-
+        Right contenido -> do
+            contenido `deepseq` return (map read (lines contenido)) --deepseq es para que se fuerce la evaluacion completa del archivo, sin esta el txt se mantiene abierto en segundo plano y no dejaria agregar mas libros--
 
 
 --Funcion Ciclo del Programa (Menu) --
@@ -171,26 +212,30 @@ cicloPrincipal libreria = do
                     putStrLn "Ingrese el codigo del libro"
                     codigoStr <- getLine
                     let codigoLibro = read codigoStr :: Int
-                    putStrLn (buscarLibroCodigo codigoLibro libreria)
+                    tiempoActual <- getCurrentTime
+                    putStrLn (buscarLibroCodigo codigoLibro libreria tiempoActual)
                     cicloPrincipal libreria
 
 
                 "2" -> do
                     putStrLn "Ingrese el titulo del libro"
                     tituloLibro <- getLine
-                    putStrLn (buscarLibroTitulo tituloLibro libreria)
+                    tiempoActual <- getCurrentTime
+                    putStrLn (buscarLibroTitulo tituloLibro libreria tiempoActual)
                     cicloPrincipal libreria
 
                 "3" -> do
                     putStrLn "Ingrese el autor del libro"
                     autorLibro <- getLine
-                    putStrLn (buscarLibroAutor autorLibro libreria)
+                    tiempoActual <- getCurrentTime
+                    putStrLn (buscarLibroAutor autorLibro libreria tiempoActual)
                     cicloPrincipal libreria
 
                 "4" -> do
                     putStrLn "Ingrese la categoria"
                     categoriaLibro <- getLine
-                    putStrLn (buscarLibroCategoria categoriaLibro libreria)
+                    tiempoActual <- getCurrentTime
+                    putStrLn (buscarLibroCategoria categoriaLibro libreria tiempoActual)
                     cicloPrincipal libreria
 
 
@@ -199,15 +244,17 @@ cicloPrincipal libreria = do
                     putStrLn "1. Disponible"
                     putStrLn "2. Prestado"
 
+                    tiempoActual <- getCurrentTime
+
                     opcionEstado <- getLine
                     case opcionEstado of
                         "1" -> do
                             let estadoLibro = "Disponible"
-                            putStrLn (buscarLibroEstado estadoLibro libreria)
+                            putStrLn (buscarLibroEstado estadoLibro libreria tiempoActual)
                             cicloPrincipal libreria
                         "2" -> do
                             let estadoLibro = "Prestado"
-                            putStrLn (buscarLibroEstado estadoLibro libreria)
+                            putStrLn (buscarLibroEstado estadoLibro libreria tiempoActual)
                             cicloPrincipal libreria
                         _ -> do
                             putStrLn "Opcion no valida, intente de nuevo"
