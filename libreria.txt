@@ -1,0 +1,10 @@
+Libro {codigo = 1122, titulo = "Cinderella", autor = "Charles Perrault", categoria = "Cuento de Hadas", estado = "Disponible", entrada = 2025-08-17 15:01:02.05231283 UTC, salida = Nothing}
+Libro {codigo = 9999, titulo = "La Bella y la Bestia", autor = "Jeanne Marie", categoria = "Cuento de Hadas", estado = "Disponible", entrada = 2025-08-17 14:59:54.934057271 UTC, salida = Nothing}
+Libro {codigo = 8888, titulo = "Malefica", autor = "Disney", categoria = "Romance", estado = "Disponible", entrada = 2025-08-17 14:57:56.377735179 UTC, salida = Nothing}
+Libro {codigo = 7777, titulo = "La Galatea", autor = "Miguel de Cervantes", categoria = "Novela", estado = "Disponible", entrada = 2025-08-17 14:56:10.33916463 UTC, salida = Nothing}
+Libro {codigo = 6666, titulo = "Principe Lear", autor = "William Shakespeare", categoria = "Drama", estado = "Disponible", entrada = 2025-08-17 14:53:55.192443351 UTC, salida = Nothing}
+Libro {codigo = 5555, titulo = "La Gitanilla", autor = "Miguel de Cervantes", categoria = "Ficcion", estado = "Disponible", entrada = 2025-08-17 14:52:08.480910021 UTC, salida = Nothing}
+Libro {codigo = 4444, titulo = "Romeo y Julieta", autor = "William Shakespeare", categoria = "Romance", estado = "Disponible", entrada = 2025-08-17 14:51:14.229951641 UTC, salida = Nothing}
+Libro {codigo = 3333, titulo = "Don Quijote", autor = "Miguel de Cervantes", categoria = "Satira", estado = "Disponible", entrada = 2025-08-17 15:04:09.769058408 UTC, salida = Just 2025-08-17 15:20:06.071460531 UTC}
+Libro {codigo = 2222, titulo = "Blanca Nieves", autor = "Jacob Grimm", categoria = "Romance", estado = "Disponible", entrada = 2025-08-17 14:46:58.152833664 UTC, salida = Nothing}
+Libro {codigo = 1111, titulo = "El Principito", autor = "Antoine de Saint ", categoria = "Literatura Infantil", estado = "Disponible", entrada = 2025-08-17 14:45:34.868094743 UTC, salida = Nothing}
